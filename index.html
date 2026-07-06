@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape Room ระบบกระดูก</title>
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(#ffe8f4,#dff7ff);
+color:#444;
+}
+.container{
+max-width:900px;
+margin:20px auto;
+background:white;
+border-radius:20px;
+padding:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.15);
+text-align:center;
+}
+h1{color:#ff5c9f}
+#timer{font-size:28px;font-weight:bold;color:#ff6699}
+#progress{
+height:18px;
+background:#eee;
+border-radius:10px;
+overflow:hidden;
+margin:15px 0;
+}
+#bar{
+height:100%;
+width:0%;
+background:#7dd3fc;
+transition:.3s;
+}
+.card{
+background:#fff7fb;
+border:3px dashed #ffc2dc;
+border-radius:18px;
+padding:20px;
+margin-top:15px;
+}
+.bones{
+font-size:45px;
+margin-bottom:10px;
+}
+input{
+padding:10px;
+width:80%;
+font-size:18px;
+border-radius:10px;
+border:2px solid #ffb4d2;
+}
+button{
+margin-top:15px;
+padding:12px 25px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#ff6ea9;
+color:white;
+cursor:pointer;
+}
+button:hover{background:#ff4d94}
+.small{font-size:14px;color:#777}
+</style>
+</head>
+<body>
+
+<div class="container">
+<div class="bones">🦴 💀 🦴 🦴 💀 🦴</div>
+<h1>Escape Room ห้องลับระบบกระดูก</h1>
+
+<div id="timer">20:00</div>
+
+<div id="progress"><div id="bar"></div></div>
+
+<div class="card">
+<h2 id="title">เริ่มเกม</h2>
+<p id="question">กดปุ่ม "เริ่มเกม" เพื่อเริ่มการผจญภัย</p>
+
+<input id="answer" placeholder="พิมพ์คำตอบที่นี่">
+
+<br>
+<button onclick="play()" id="btn">เริ่มเกม</button>
+
+<p id="message"></p>
+</div>
+
+<p class="small">ตกแต่งเพิ่มเติมได้ด้วยภาพกระดูกจาก Canva หรือ AI</p>
+
+</div>
+
+<script>
+
+const levels=[
+["ผู้ใหญ่มีกระดูกกี่ชิ้น","206","2"],
+["กระดูกที่ยาวที่สุดคืออะไร","กระดูกต้นขา","0"],
+["กระดูกที่ป้องกันสมองคืออะไร","กะโหลกศีรษะ","6"],
+["วิตามินที่ช่วยดูดซึมแคลเซียม","วิตามินดี","5"],
+["กระดูกสะบ้าอยู่ส่วนใด","หัวเข่า","8"]
+];
+
+while(levels.length<15){
+ levels.push(["คำถามโบนัสข้อ "+levels.length,"กระดูก",""+(levels.length%10)]);
+}
+
+let stage=-1;
+let code="";
+let time=1200;
+
+function norm(s){return s.trim().toLowerCase();}
+
+function load(){
+if(stage<15){
+title.innerHTML="ด่าน "+(stage+1);
+question.innerHTML=levels[stage][0];
+answer.value="";
+bar.style.width=(stage/15*100)+"%";
+}else{
+title.innerHTML="🔐 เปิดประตู";
+question.innerHTML="กรอกรหัส "+code.length+" หลัก";
+answer.value="";
+bar.style.width="100%";
+}
+}
+
+function play(){
+
+if(stage==-1){
+stage=0;
+btn.innerHTML="ส่งคำตอบ";
+load();
+return;
+}
+
+if(stage<15){
+if(norm(answer.value)==norm(levels[stage][1])){
+message.innerHTML="✅ ผ่านด่าน ได้เลข "+levels[stage][2];
+code+=levels[stage][2];
+stage++;
+setTimeout(load,600);
+}else{
+message.innerHTML="❌ ยังไม่ถูก ลองอีกครั้ง";
+}
+}else{
+if(answer.value==code){
+document.querySelector(".container").innerHTML="<h1>🎉 ยินดีด้วย</h1><h2>คุณหนีออกจากห้องสำเร็จ!</h2><div style='font-size:90px'>🦴🏆💀</div>";
+}else{
+message.innerHTML="❌ รหัสไม่ถูก";
+}
+}
+}
+
+setInterval(()=>{
+if(time<=0)return;
+time--;
+let m=Math.floor(time/60);
+let s=time%60;
+timer.innerHTML=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+},1000);
+
+</script>
+
+</body>
+</html>
